@@ -1,0 +1,13 @@
+.containertest {
+    display: flex;
+    flex-wrap:wrap;
+    width: 1000px;
+    margin: 0 auto;
+    justify-content: flex-start;
+}
+.card{
+  margin: 20px;
+}
+.card-img-top{
+height: 214.5px;
+}
