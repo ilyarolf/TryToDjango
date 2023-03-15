@@ -17,7 +17,7 @@ Items
             <p class="card-text">{{item.item_description}}</p>
             <p class="card-text">{{item.item_price}}$</p>
             <a href="{% url 'item-detail' item.pk %}" class="btn btn-primary">Купить сейчас</a>
-            <a href="{% url 'add-to-card' item.pk %}" class="btn btn-primary">Добавить в корзину</a>
+            <a href="{% url 'add-to-cart' item.pk %}" class="btn btn-primary">Добавить в корзину</a>
         </div>
     </div>
     {% endfor %}

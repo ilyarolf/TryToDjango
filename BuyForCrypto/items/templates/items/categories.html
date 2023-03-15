@@ -1,0 +1,22 @@
+{% extends 'items/layout.html' %}
+{% load static %}
+{% block css_additional %} <link rel="stylesheet" href="{% static 'items/css/items.css' %}"> {% endblock %}
+{% block title %}Categories {% endblock %}
+{% block content %}
+<div class="containertest">
+{% if categories_list %}
+{% for category in categories_list %}
+<div class="card" style="width: 18rem;">
+        <a href="{% url 'show-category' category.pk %}"><img src="{{category.category_picture}}" class="card-img-top" alt="img{{category.category_picture}}"></a>
+        <div class="card-body">
+            <h5 class="card-title">{{category.category_name}}</h5>
+            <p class="card-text">{{item.item_description}}</p>
+        </div>
+    </div>
+{% endfor %}
+{% else %}
+    <h3>No items</h3>
+    {% endif %}
+</div>
+
+    {% endblock %}
