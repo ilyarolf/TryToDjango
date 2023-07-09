@@ -1,0 +1,31 @@
+form {
+  display: flex;
+  flex-direction: column; /* Размещаем элементы в столбец */
+  align-items: center;
+  margin-top: 50px;
+}
+
+label {
+  margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 300px;
+  padding: 5px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+button[type="submit"] {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #45a049;
+}
