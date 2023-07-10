@@ -1,4 +1,4 @@
-import django.contrib.auth.models
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # Create your models here.
@@ -52,3 +52,17 @@ class Review(models.Model):
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
 
+class BuyForCryptoUser(AbstractUser):
+    email = models.CharField(error_messages={'unique': 'A user with that email already exists.'},blank=True, max_length=254, verbose_name='email address', unique=True)
+    btc_address = models.CharField('Адрес BTC', max_length=40, unique=True)
+    ltc_address = models.CharField('Адрес LTC', max_length=40, unique=True)
+    trx_address = models.CharField('Адрес TRX', max_length=40, unique=True)
+    top_up_amount = models.IntegerField('Сумма пополнений', default=0)
+    consume_amount = models.IntegerField('Сумма трат', default=0)
+
+    def __str__(self):
+        return str(self.username)
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'

@@ -1,19 +1,60 @@
 {% extends 'items/layout.html' %}
 {% load my_tag %}
 {% load static %}
-{% block css_additional %} <link rel="stylesheet" href="{% static 'items/css/login.css' %}"> {% endblock %}
+
 {% block title %}
-Items
+  Items
 {% endblock %}
+
 {% block content %}
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="text-center">
-          <h2>Your profile</h2>
-          <p>User: {{ user.username }}.</p>
+<style>
+  .crypto-address {
+    overflow-wrap: anywhere;
+  }
+</style>
+
+<div class="container">
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="text-center">Business Profile</h2>
+          <p class="text-center">User: {{ user.username }}</p>
+          <hr class="my-4">
+          <div class="row">
+            <div class="col-md-6">
+              <h4>Balance:</h4>
+              <p id="balance">${{ balance }}</p>
+              <form method="post" action="{% url 'refresh_balance' %}">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-primary" type="submit">Refresh Balance</button>
+              </form>
+            </div>
+            <div class="col-md-6">
+              <h4>Cryptocurrency Addresses:</h4>
+              <ul class="list-unstyled">
+                <li>
+                  <span class="d-inline-block mr-2">Bitcoin:</span>
+                  <span id="bitcoin-address" class="crypto-address">{{ user.btc_address }}</span>
+                  <button class="btn btn-sm btn-outline-primary copy-button" data-copy-target="#bitcoin-address">Copy</button>
+                </li>
+                <li>
+                  <span class="d-inline-block mr-2">Litecoin:</span>
+                  <span id="litecoin-address" class="crypto-address">{{ user.ltc_address }}</span>
+                  <button class="btn btn-sm btn-outline-primary copy-button" data-copy-target="#litecoin-address">Copy</button>
+                </li>
+                <li>
+                  <span class="d-inline-block mr-2">Tron:</span>
+                  <span id="tron-address" class="crypto-address">{{ user.trx_address }}</span>
+                  <button class="btn btn-sm btn-outline-primary copy-button" data-copy-target="#tron-address">Copy</button>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+</div>
+
 {% endblock %}

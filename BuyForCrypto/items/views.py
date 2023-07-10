@@ -3,10 +3,12 @@ import datetime
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from .models import Item, Review, Category, Subcategory
-from .utils import encode_to_base64, decode_from_base64
+from .models import Item, Review, Category, Subcategory, BuyForCryptoUser
+from .utils import encode_to_base64, decode_from_base64, CryptoAddressGenerator
 from django.contrib.auth import authenticate, login
 from .forms import RegistrationForm
+
+
 # Create your views here.
 
 
@@ -18,13 +20,19 @@ def detail(request, item_id):
     # return HttpResponse(request, f'{item_id}')
     item = Item.objects.get(pk=item_id)
     return render(request, 'items/item_detail_view.html', {"item": item})
+
+
 @login_required
 def profile(request):
-    return render(request, 'items/profile.html')
+    user = request.user
+    balance = user.top_up_amount - user.consume_amount
+    return render(request, 'items/profile.html', {'balance': balance})
+
 
 def items(request):
     items = Item.objects.all()
-    return render(request, 'items/items.html', {"items" : items})
+    return render(request, 'items/items.html', {"items": items})
+
 
 def add_to_cart(request, item_id):
     category = Item.objects.filter(pk=item_id).values('item_category')[0]['item_category']
@@ -37,8 +45,9 @@ def add_to_cart(request, item_id):
     response = HttpResponseRedirect(f'/categories/{category}')
     expire_date = datetime.datetime.now()
     expire_date = expire_date + datetime.timedelta(days=7)
-    response.set_cookie(key='user_cart', value = cookies,expires=expire_date)
+    response.set_cookie(key='user_cart', value=cookies, expires=expire_date)
     return response
+
 
 def cart(request):
     user_cart = request.COOKIES.get('user_cart')
@@ -50,10 +59,11 @@ def cart(request):
         items_list = []
         for id in id_in_cart:
             try:
-                items_list.append(Item.objects.get(pk = id))
+                items_list.append(Item.objects.get(pk=id))
             except:
                 pass
         return render(request, 'items/cart.html', {'user_cart': items_list})
+
 
 def del_from_cart(request, item_id):
     user_cart = decode_from_base64(request.COOKIES.get('user_cart'))
@@ -66,13 +76,16 @@ def del_from_cart(request, item_id):
         response.set_cookie(key='user_cart', value=cookies, expires=expire_date)
         return response
 
+
 def categories(request):
     categories_list = Category.objects.all()
-    return render(request, 'items/categories.html', {'categories_list' : categories_list})
+    return render(request, 'items/categories.html', {'categories_list': categories_list})
+
 
 def show_category(request, category_id):
     items = Item.objects.filter(item_category=category_id)
-    return render(request, 'items/items.html', {"items" : items})
+    return render(request, 'items/items.html', {"items": items})
+
 
 def login(request):
     if request.method == 'POST':
@@ -93,11 +106,33 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            last_user = BuyForCryptoUser.objects.last()
+            if last_user is None:
+                wallet_depth = 0
+            else:
+                wallet_depth = last_user.pk + 1
+            crypto_addresses = CryptoAddressGenerator().get_addresses(wallet_depth)
+            new_user = BuyForCryptoUser(
+                username=user.username,
+                email=user.email,
+                btc_address=crypto_addresses['btc'],
+                ltc_address=crypto_addresses['ltc'],
+                trx_address=crypto_addresses['trx'],
+            )
+            new_user.set_password(form.cleaned_data['password1'])
+            new_user.save()
             return redirect('registration_success')
     else:
         form = RegistrationForm()
     return render(request, 'registration/register.html', {'form': form})
 
+
 def registration_success(request):
     return render(request, 'registration/registration_success.html')
+
+
+def refresh_balance(request):
+    user = request.user
+    balance = user.top_up_amount - user.consume_amount
+    return render(request, 'items/profile.html', {'user': request.user, 'balance': balance})

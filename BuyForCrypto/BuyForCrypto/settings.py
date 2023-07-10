@@ -34,7 +34,7 @@ LOGIN_URL = '/login/'
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = 'Strict'
-
+AUTH_USER_MODEL = 'items.BuyForCryptoUser'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_NAME = 'sessionid'
 SESSION_COOKIE_AGE = 259200
@@ -43,13 +43,13 @@ SESSION_COOKIE_AGE = 259200
 # Application definition
 
 INSTALLED_APPS = [
-    'items',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'items.apps.ItemsConfig',
 ]
 
 MIDDLEWARE = [
@@ -129,7 +129,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATIC_ROOT = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "items/static",
 ]

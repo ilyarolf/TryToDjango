@@ -1,7 +1,8 @@
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from .models import BuyForCryptoUser
+
 
 class RegistrationForm(UserCreationForm):
     class Meta:
-        model = User
+        model = BuyForCryptoUser
         fields = ['username', 'email']
