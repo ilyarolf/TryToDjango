@@ -1,10 +1,14 @@
+import asyncio
 import datetime
-
+from asgiref.sync import async_to_sync
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from .models import Item, Review, Category, Subcategory, BuyForCryptoUser
-from .utils import encode_to_base64, decode_from_base64, CryptoAddressGenerator
+from items.utils.CryptoApiRequest import CryptoApiRequest
+
+from .models import Item, Category, BuyForCryptoUser
+from items.utils.utils import encode_to_base64, decode_from_base64
+from items.utils.CryptoAddressGenerator import CryptoAddressGenerator
 from django.contrib.auth import authenticate, login
 from .forms import RegistrationForm
 
@@ -134,5 +138,23 @@ def registration_success(request):
 
 def refresh_balance(request):
     user = request.user
+
+    crypto_api_request = CryptoApiRequest()
+    crypto_api_request.refresh_balances(user)
+
     balance = user.top_up_amount - user.consume_amount
     return render(request, 'items/profile.html', {'user': request.user, 'balance': balance})
+
+@login_required
+def buy_now(request, item_id):
+    if request.method == 'POST':
+        user = request.user
+        balance = user.top_up_amount - user.consume_amount
+        item = Item.objects.get(pk=item_id)
+        if balance > item.item_price:
+            user.consume_amount+=item.item_price
+            user.save()
+            balance = user.top_up_amount - user.consume_amount
+            return render(request, 'items/profile.html', {'user': request.user, 'balance': balance})
+        else:
+            return render(request, 'items/profile.html', {'user': request.user, 'balance': balance})

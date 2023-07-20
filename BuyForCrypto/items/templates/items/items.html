@@ -1,7 +1,9 @@
 {% extends 'items/layout.html' %}
 {% load my_tag %}
 {% load static %}
-{% block css_additional %} <link rel="stylesheet" href="{% static 'items/css/items.css' %}"> {% endblock %}
+{% block css_additional %}
+<link rel="stylesheet" href="{% static 'items/css/items.css' %}">
+{% endblock %}
 {% block title %}
 Items
 {% endblock %}
@@ -9,16 +11,18 @@ Items
 {% if items %}
 <div class="containertest">
     {% for item in items %}
-    <div class="card" style="width: 18rem;">
-        <img src="{{item.item_picture}}" class="card-img-top" alt="img{{item.item_name}}">
-        <div class="card-body">
-            <h5 class="card-title">{{item.item_name}}</h5>
-            <p class="card-text">{{item.item_description}}</p>
-            <p class="card-text">{{item.item_price}}$</p>
-            <a href="{% url 'item-detail' item.pk %}" class="btn btn-primary">Купить сейчас</a>
-            <a href="{% url 'add-to-cart' item.pk %}" class="btn btn-primary">Добавить в корзину</a>
+    <a href="{% url 'item-detail' item.pk %}">
+        <div class="card" style="width: 18rem;">
+            <img src="{{item.item_picture}}" class="card-img-top" alt="img{{item.item_name}}">
+            <div class="card-body">
+                <h5>{{item.item_name}}</h5>
+                <p>{{item.item_description}}</p>
+                <p>{{item.item_price}}$</p>
+                <a href="{% url 'item-detail' item.pk %}" class="btn btn-primary">Купить сейчас</a>
+                <a href="{% url 'add-to-cart' item.pk %}" class="btn btn-primary">Добавить в корзину</a>
+            </div>
         </div>
-    </div>
+    </a>
     {% endfor %}
 </div>
 {% else %}

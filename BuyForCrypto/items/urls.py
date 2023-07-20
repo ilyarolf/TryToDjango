@@ -17,4 +17,6 @@ urlpatterns = [
     path('registration_success/', views.registration_success, name='registration_success'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
     path('refresh-balance/', views.refresh_balance, name='refresh_balance'),
+    path('buy_now/<int:item_id>', views.buy_now, name='buy_now'),
+
 ]

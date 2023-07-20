@@ -57,8 +57,13 @@ class BuyForCryptoUser(AbstractUser):
     btc_address = models.CharField('Адрес BTC', max_length=40, unique=True)
     ltc_address = models.CharField('Адрес LTC', max_length=40, unique=True)
     trx_address = models.CharField('Адрес TRX', max_length=40, unique=True)
-    top_up_amount = models.IntegerField('Сумма пополнений', default=0)
-    consume_amount = models.IntegerField('Сумма трат', default=0)
+    btc_balance = models.FloatField('Баланс BTC', default=0)
+    ltc_balance = models.FloatField('Баланс LTC', default=0)
+    usdt_balance = models.FloatField('Баланс USDT', default=0)
+    top_up_amount = models.FloatField('Сумма пополнений', default=0)
+    consume_amount = models.FloatField('Сумма трат', default=0)
+    last_refresh_balance_datetime = models.DateTimeField('Последнее время обновления баланса', null=True, blank=True)
+
 
     def __str__(self):
         return str(self.username)
